@@ -1,0 +1,9 @@
+
+Warning: no stack segment
+
+ Start  Stop   Length Name                   Class
+ 00000H 00013H 00014H DATA                   
+ 00020H 00079H 0005AH CODE                   
+ 00080H 000BFH 00040H LIFO                   STACK
+
+Program entry point at 0002:0000

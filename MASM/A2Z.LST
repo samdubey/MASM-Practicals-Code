@@ -1,0 +1,224 @@
+Microsoft (R) Macro Assembler  Version 4.00                 12/9/2                                                            Page     1-1
+                                                            
+
+       1                                       ;PROGRAM TO WRITE A TO Z WITH ON
+					E SPACE 
+       2                             C  INCLUDE TYIO.LIB 
+       3                             C  Regsave         macro 
+       4                             C                  Push ax 
+       5                             C                  Push bx 
+       6                             C                  Push cx 
+       7                             C                  Push dx 
+       8                             C                  Push si 
+       9                             C                  Push di 
+      10                             C  Endm 
+      11                             C   
+      12                             C  Regrestore      macro 
+      13                             C                  Pop di 
+      14                             C                  Pop si 
+      15                             C                  Pop dx 
+      16                             C                  Pop cx 
+      17                             C                  Pop bx 
+      18                             C                  Pop ax 
+      19                             C  Endm 
+      20                             C   
+      21                             C  Screenclr       macro 
+      22                             C                  Regsave 
+      23                             C                  Mov     ax,0600H 
+      24                             C                  Mov     dx,184fh 
+      25                             C                  Mov     cx,0000 
+      26                             C                  Mov     bh,07 
+      27                             C                  Int     10h 
+      28                             C                  Regrestore 
+      29                             C  endm 
+      30                             C   
+      31                             C  Curset          macro   rc 
+      32                             C                  Regsave 
+      33                             C                  Mov dx,rc 
+      34                             C                  Mov ah,02h 
+      35                             C                  Int     10h 
+      36                             C                  Regrestore 
+      37                             C  Endm 
+      38                             C   
+      39                             C  Chrout  macro   char 
+      40                             C                  Regsave 
+      41                             C                  Mov ah,02h 
+      42                             C                  Mov dl,char 
+      43                             C                  Int     21h 
+      44                             C                  Regrestore 
+      45                             C  Endm 
+      46                             C   
+      47                             C  Display macro   mess 
+      48                             C                  Regsave 
+      49                             C                  mov dx,offset mess 
+      50                             C                  mov ah,09h 
+      51                             C                  Int     21h 
+      52                             C                  Regrestore 
+      53                             C  Endm 
+Microsoft (R) Macro Assembler  Version 4.00                 12/9/2                                                            Page     1-2
+                                                            
+
+      54                             C   
+      55                             C  Inpchr macro    char 
+      56                             C                  Mov     ah,01h 
+      57                             C                  Int     21h 
+      58                             C                  Mov char,al 
+      59                             C  Endm 
+      60                             C   
+      61                             C  Inpstring       macro loc 
+      62                             C                  Regsave 
+      63                             C                  mov     ah,0ah 
+      64                             C                  mov     dx,offset loc 
+      65                             C                  Int     21h 
+      66                             C                  regrestore 
+      67                             C  Endm 
+      68                             C   
+      69                             C  Nextln  macro 
+      70                             C                  CHROUT 0ah 
+      71                             C                  CHROUT 0dh 
+      72                             C  Endm 
+      73                             C   
+      74                                 
+      75 0000                           DATA SEGMENT 
+      76 0000  0014[                             DB 20 DUP(0) 
+      77            00                  
+      78                         ]      
+      79                                
+      80 0014                           DATA ENDS 
+      81 0000                           LIFO SEGMENT STACK 
+      82 0000  0020[                             DW 32 DUP(0) 
+      83            0000                
+      84                         ]      
+      85                                
+      86 0040                           LIFO ENDS 
+      87 0000                           CODE SEGMENT 
+      88                                         ASSUME CS:CODE,DS:DATA,SS:LIFO
+					 
+      89 0000  B8 ---- R                  START: MOV AX,DATA 
+      90 0003  8E D8                             MOV DS,AX 
+      91                                         SCREENCLR 
+      92 0005  50                     2                 Push ax
+      93 0006  53                     2                 Push bx
+      94 0007  51                     2                 Push cx
+      95 0008  52                     2                 Push dx
+      96 0009  56                     2                 Push si
+      97 000A  57                     2                 Push di
+      98 000B  B8 0600                1                 Mov     ax,0600H
+      99 000E  BA 184F                1                 Mov     dx,184fh
+     100 0011  B9 0000                1                 Mov     cx,0000
+     101 0014  B7 07                  1                 Mov     bh,07
+     102 0016  CD 10                  1                 Int     10h
+     103 0018  5F                     2                 Pop di
+     104 0019  5E                     2                 Pop si
+     105 001A  5A                     2                 Pop dx
+     106 001B  59                     2                 Pop cx
+Microsoft (R) Macro Assembler  Version 4.00                 12/9/2                                                            Page     1-3
+                                                            
+
+     107 001C  5B                     2                 Pop bx
+     108 001D  58                     2                 Pop ax
+     109                                         CURSET 0D00H 
+     110 001E  50                     2                 Push ax
+     111 001F  53                     2                 Push bx
+     112 0020  51                     2                 Push cx
+     113 0021  52                     2                 Push dx
+     114 0022  56                     2                 Push si
+     115 0023  57                     2                 Push di
+     116 0024  BA 0D00                1                 Mov dx,0D00H
+     117 0027  B4 02                  1                 Mov ah,02h
+     118 0029  CD 10                  1                 Int     10h
+     119 002B  5F                     2                 Pop di
+     120 002C  5E                     2                 Pop si
+     121 002D  5A                     2                 Pop dx
+     122 002E  59                     2                 Pop cx
+     123 002F  5B                     2                 Pop bx
+     124 0030  58                     2                 Pop ax
+     125 0031  B9 0004                           MOV CX,4 
+     126 0034  B3 41                             MOV BL,41H 
+     127 0036                             AGAIN: CHROUT BL 
+     128 0036  50                     2                 Push ax
+     129 0037  53                     2                 Push bx
+     130 0038  51                     2                 Push cx
+     131 0039  52                     2                 Push dx
+     132 003A  56                     2                 Push si
+     133 003B  57                     2                 Push di
+     134 003C  B4 02                  1                 Mov ah,02h
+     135 003E  8A D3                  1                 Mov dl,BL
+     136 0040  CD 21                  1                 Int     21h
+     137 0042  5F                     2                 Pop di
+     138 0043  5E                     2                 Pop si
+     139 0044  5A                     2                 Pop dx
+     140 0045  59                     2                 Pop cx
+     141 0046  5B                     2                 Pop bx
+     142 0047  58                     2                 Pop ax
+     143 0048  FE C3                             INC BL 
+     144 004A  49                                DEC CX 
+     145                                         CHROUT 20H 
+     146 004B  50                     2                 Push ax
+     147 004C  53                     2                 Push bx
+     148 004D  51                     2                 Push cx
+     149 004E  52                     2                 Push dx
+     150 004F  56                     2                 Push si
+     151 0050  57                     2                 Push di
+     152 0051  B4 02                  1                 Mov ah,02h
+     153 0053  B2 20                  1                 Mov dl,20H
+     154 0055  CD 21                  1                 Int     21h
+     155 0057  5F                     2                 Pop di
+     156 0058  5E                     2                 Pop si
+     157 0059  5A                     2                 Pop dx
+     158 005A  59                     2                 Pop cx
+     159 005B  5B                     2                 Pop bx
+     160 005C  58                     2                 Pop ax
+Microsoft (R) Macro Assembler  Version 4.00                 12/9/2                                                            Page     1-4
+                                                            
+
+     161 005D  83 F9 00                          CMP CX,0 
+     162 0060  80 FB 5A                          CMP BL,'Z' 
+     163 0063  7E D1                             JLE AGAIN 
+     164 0065  B4 4C                             MOV AH,4CH 
+     165 0067  CD 21                             INT 21H 
+     166 0069                           CODE ENDS 
+     167                                   END START 
+
+Microsoft (R) Macro Assembler  Version 4.00                 12/9/2                                                            Symbols-1
+                                                             
+
+Macros:
+
+		N a m e			Lines
+
+CHROUT . . . . . . . . . . . . .  	   5
+CURSET . . . . . . . . . . . . .  	   5
+DISPLAY  . . . . . . . . . . . .  	   5
+INPCHR . . . . . . . . . . . . .  	   3
+INPSTRING  . . . . . . . . . . .  	   5
+NEXTLN . . . . . . . . . . . . .  	   2
+REGRESTORE . . . . . . . . . . .  	   6
+REGSAVE  . . . . . . . . . . . .  	   6
+SCREENCLR  . . . . . . . . . . .  	   7
+
+Segments and Groups:
+
+                N a m e         	Size	Align	Combine Class
+
+CODE . . . . . . . . . . . . . .  	0069	PARA	NONE	
+DATA . . . . . . . . . . . . . .  	0014	PARA	NONE	
+LIFO . . . . . . . . . . . . . .  	0040	PARA	STACK	
+
+Symbols:            
+
+                N a m e         	Type	Value	Attr         
+
+AGAIN  . . . . . . . . . . . . .  	L NEAR	0036	CODE
+
+START  . . . . . . . . . . . . .  	L NEAR	0000	CODE
+
+
+     98 Source  Lines
+    169 Total   Lines
+     35 Symbols
+
+  48824 Bytes symbol space free
+
+      0 Warning Errors
+      0 Severe  Errors
