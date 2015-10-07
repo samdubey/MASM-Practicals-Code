@@ -1,0 +1,34 @@
+/*program for A to Z one line and 0 to 9 on onether line*/
+include tyio.lib
+data segment
+db 20 dup(0)
+data ends
+lifo segment stak
+dw 32 dup(0)
+lifo ends
+code segment 
+assume cs:code,ds:data,ss:lifo
+start: mov ax,data					
+	mov ds,ax
+	screenclr
+	curser 0D00h
+	mov cx,4
+	mov bl,41H
+again:	chrout bl
+	inc bl
+	dec cx
+	chrout 20H
+	cmp cx,0
+	cmp bl,'z'
+	jle again
+	mov bl,30H
+	next ln
+nagain: chrout bl
+	chrout 20H
+	inc bl
+	cmp bl,39H
+	jle nagain
+	mov ah,4CH
+	int21H
+code ends
+end start
